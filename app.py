@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from langchain import SQLDatabase
+from langchain.sql_database import SQLDatabase
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
