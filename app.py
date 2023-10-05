@@ -13,7 +13,7 @@ from qdrant_client.http.models import Distance, VectorParams
 from langchain.vectorstores import Qdrant,MongoDBAtlasVectorSearch
 from pymongo import MongoClient
 from langchain.document_loaders import DirectoryLoader
-# from langchain_experimental.sql import SQLDatabaseChain
+from langchain_experimental.sql import SQLDatabaseChain
 
 load_dotenv('.env')
 
