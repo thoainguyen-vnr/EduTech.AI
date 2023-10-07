@@ -32,7 +32,7 @@ def connect_qdrant_vector_db():
     # )
     vector_store = Qdrant(
         client=client, 
-        collection_name="test_collection", 
+        collection_name="test_collectionz", 
         embeddings=embeddings,
     )
     return vector_store
