@@ -28,6 +28,6 @@ def handle_userinput_sql_database(user_question):
 
                 {question}
             """ 
-    db_chain = SQLDatabaseChain(llm=llm, database=db, verbose=False)
+    db_chain = SQLDatabaseChain(llm=llm, database=db, verbose=True)
     response = QUERY.format(question=user_question)
-    return response
+    return db_chain.run(response)

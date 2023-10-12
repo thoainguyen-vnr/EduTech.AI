@@ -9,9 +9,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain.embeddings import HuggingFaceHubEmbeddings
-import os, io
-# Select embeddings
-embeddings = OpenAIEmbeddings()
+
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -19,14 +17,6 @@ def get_pdf_text(pdf_docs):
         pdf_reader = PdfReader(pdf)
         for page in pdf_reader.pages:
             text += page.extract_text()
-    return text
-
-def get_file_text(file_txt):
-    text = ""
-    for txt in file_txt:
-        documents = [txt.read().decode()]
-    for doc in documents:
-        text += doc
     return text
 
 def get_text_chunks(text):
@@ -41,6 +31,7 @@ def get_text_chunks(text):
     return chunks
 
 def get_vectorstore(text_chunks):
+    embeddings = OpenAIEmbeddings()
     # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
     vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
     return vectorstore
@@ -57,41 +48,13 @@ def get_conversation_chain(vectorstore):
     )
     return conversation_chain
 
-def get_ask_file_pdf(file_read):
-    raw_text = get_pdf_text(file_read)
+def get_ask_document(pdf_file):
+    # get pdf text
+    raw_text = get_pdf_text(pdf_file)
+    # get the text chunks
     text_chunks = get_text_chunks(raw_text)
+    # create vector store
     vectorstore = get_vectorstore(text_chunks)
-    
-    # st.session_state.conversation = get_conversation_chain(vectorstore)
-
-def get_ask_file_txt(file_read):
-    raw_text = get_file_text(file_read)
-    text_chunks = get_text_chunks(raw_text)
-    vectorstore = get_vectorstore(text_chunks)
-    
-    #st.session_state.conversation = get_conversation_chain(vectorstore)
-
-def get_ask_document(file_upload, upload_type_file):
-    vectorstore = ""
-    if upload_type_file == "File PDF":
-        vectorstore = get_ask_file_pdf(file_upload)
-    elif upload_type_file == "File Text":
-        vectorstore = get_ask_file_txt(file_upload)
-    elif upload_type_file == "File Word":
-        st.write("read file .doc")
-    # st.write(vectorstore)
+    # create conversation chain
     st.session_state.conversation = get_conversation_chain(vectorstore)
-
-    # for file in file_upload:
-    #     root_ext  = os.path.splitext(file.name)
-    #     if root_ext[1] == ".pdf":
-    #         st.write("read file .pdf") 
-        #     get_ask_file_pdf(file)
-        # if root_ext[1] == ".txt":
-        #     st.write("read file .txt")
-        # if root_ext[1] == ".doc" or root_ext[1] == ".docx":
-        #     st.write("read file .doc")
-            
-    
-    
 
